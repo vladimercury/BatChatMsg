@@ -20,7 +20,17 @@ public class AnswerController {
     public Answer answer(Message message, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception{
         Answer ans = new Answer(simpMessageHeaderAccessor.getSessionId() + ": " +  message.getContent() + "!");
         history.add(ans);
-        System.out.println(history.size());
         return ans;
+    }
+
+    @MessageMapping("/history")
+    @SendTo("/topic/history")
+    public Answer answer() throws Exception{
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Answer ans : history){
+            stringBuilder.append(ans.getContent());
+            stringBuilder.append("\n");
+        }
+        return new Answer(stringBuilder.toString());
     }
 }

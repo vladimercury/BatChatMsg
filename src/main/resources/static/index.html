@@ -7,6 +7,11 @@
     <script type="text/javascript">
         var stompClient = null;
 
+        function sleep(ms) {
+            ms += new Date().getTime();
+            while (new Date() < ms){}
+        }
+
         function setConnected(connected) {
             document.getElementById('response').innerHTML = '';
         }
@@ -18,7 +23,11 @@
                 stompClient.subscribe('/topic/greetings', function(greeting){
                     showGreeting(JSON.parse(greeting.body).content);
                 });
+                stompClient.subscribe('/topic/history', function(greeting){
+                    showHistory(JSON.parse(greeting.body).content);
+                });
             });
+            sendHistoryQuery();
         }
 
         function disconnect() {
@@ -28,19 +37,24 @@
             setConnected(false);
         }
 
-    //private static List<Answer> history = new ArrayList<Answer>();
         function sendName() {
             var content = document.getElementById('content').value;
             stompClient.send("/app/hello", {}, JSON.stringify({ 'content': content }));
         }
 
+        function sendHistoryQuery(){
+            if(stompClient.ws.readyState === SockJS.CONNECTING && stompClient.ws.subscheck != 2)
+                setTimeout(sendHistoryQuery, 100);
+            else
+                stompClient.send("/app/history", {}, JSON.stringify({ 'content': '' }));
+        }
+
         function showGreeting(message) {
-            //var response = document.getElementById('response');
-            //var p = document.createElement('p');
-            //p.style.wordWrap = 'break-word';
-            //p.appendChild(document.createTextNode(message));
-            //response.appendChild(p);
             document.getElementById('response').innerHTML = document.getElementById('response').innerHTML + message + '\n';
+        }
+
+        function showHistory(message){
+            document.getElementById('response').innerHTML = message;
         }
     </script>
 </head>

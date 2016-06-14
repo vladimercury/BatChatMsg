@@ -137,6 +137,7 @@
       };
       this.maxWebSocketFrameSize = 16 * 1024;
       this.subscriptions = {};
+      this.subscheck = 0;
       this.partialData = '';
     }
 
@@ -389,6 +390,7 @@
       }
       headers.destination = destination;
       this.subscriptions[headers.id] = callback;
+      this.subscheck += 1;
       this._transmit("SUBSCRIBE", headers);
       client = this;
       return {
@@ -401,6 +403,7 @@
 
     Client.prototype.unsubscribe = function(id) {
       delete this.subscriptions[id];
+      this.subscheck -= 1;
       return this._transmit("UNSUBSCRIBE", {
         id: id
       });
