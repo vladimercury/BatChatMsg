@@ -10,6 +10,21 @@
     <script src="js/jquery-1.11.3.min.js"></script>
     <script type="text/javascript">
         var stompClient = null;
+        var usernames = {};
+        var colors = [
+            "#e32636", "#78dbe2", "#9f2b68",
+            "#9966cc", "#44944a", "#2f4f4f",
+            "#6a5acd", "#990066", "#79553d",
+            "#003153", "#1e5945", "#a5260a",
+            "#b03f35", "#957b8d", "#d87093",
+            "#2a8d9c", "#62639b", "#480607",
+            "#3e5f8a", "#cd7f32", "#6495ed",
+            "#34c924", "#256d7b", "#00541f",
+            "#c154c1", "#1a153f", "#474a51",
+            "#1460bd", "#00693e", "#1e90ff",
+            "#01796f", "#006633", "#ffd700",
+            "#4b0082", "#1cd3a2", "#884535"
+        ];
 
         function sleep(ms) {
             ms += new Date().getTime();
@@ -41,8 +56,18 @@
             setConnected(false);
         }
 
+        function getColor(username){
+            if(usernames[username] === undefined){
+                usernames[username] = colors[Math.floor(Math.random() * colors.length)];
+                document.getElementById('roomuserlist').innerHTML = document.getElementById('roomuserlist').innerHTML +
+                    '<b><code><font color="' + usernames[username] + '">' + username + '</font></code></b><br>';
+            }
+            return usernames[username];
+        }
+
         function sendName() {
             var content = document.getElementById('content').value;
+            if(content == '') return;
             stompClient.send("/app/hello", {}, JSON.stringify({ 'content': content }));
             document.getElementById('content').value = '';
         }
@@ -56,11 +81,13 @@
 
         function showGreeting(message) {
             document.getElementById('response').innerHTML = document.getElementById('response').innerHTML +
-                '<code><font color="#0000aa">' + message.author + '</font></code>: ' + message.content + '<br>';
+                '<b><code><font color="' + getColor(message.author) + '">' + message.author + '</font></code></b>: ' +
+                message.content + '<br>';
             lastMessage = message;
         }
 
         function showHistory(history){
+            document.getElementById('response').innerHTML = '';
             for(i=0; i < history.authors.length; i++){
                 showGreeting({"author": history.authors[i], "content": history.contents[i]});
             }
@@ -144,7 +171,7 @@
                 <div class="well span8" style="height: 400px; overflow-y: scroll; text-align: left; word-wrap: break-word;" id="response">
                 </div>
                 <div class="well span2" style="height:400px; overflow-y: scroll; overflow-x: scroll; font-size: 9pt; text-align: left;" id="roomuserlist">
-                    #!USERLIST!#
+
                 </div>
                 <div class="container" id="messageform">
                     <input type="text" class="span8 search-query" id="content" placeholder="Your message" onkeyup="messageInputKeyCheck(event)">
