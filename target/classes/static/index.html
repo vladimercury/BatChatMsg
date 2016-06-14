@@ -11,6 +11,7 @@
     <script type="text/javascript">
         var stompClient = null;
         var roomname = '';
+        var username = 'suka';
         var usernames = {};
         var colors = [
             "#e32636", "#78dbe2", "#9f2b68",
@@ -58,13 +59,13 @@
             setConnected(false);
         }
 
-        function getColor(username){
-            if(usernames[username] === undefined){
-                usernames[username] = colors[Math.floor(Math.random() * colors.length)];
+        function getColor(uname){
+            if(usernames[uname] === undefined){
+                usernames[uname] = colors[Math.floor(Math.random() * colors.length)];
                 document.getElementById('roomuserlist').innerHTML = document.getElementById('roomuserlist').innerHTML +
-                    '<b><code><font color="' + usernames[username] + '">' + username + '</font></code></b><br>';
+                    '<b><code><font color="' + usernames[uname] + '">' + uname + '</font></code></b><br>';
             }
-            return usernames[username];
+            return usernames[uname];
         }
 
         function getRoomName(){
@@ -79,7 +80,7 @@
         function sendName() {
             var content = document.getElementById('content').value;
             if(content == '') return;
-            stompClient.send('/app/hello/' + roomname, {}, JSON.stringify({ 'content': content }));
+            stompClient.send('/app/hello/' + roomname, {}, JSON.stringify({ 'author': username, 'content': content }));
             document.getElementById('content').value = '';
         }
 

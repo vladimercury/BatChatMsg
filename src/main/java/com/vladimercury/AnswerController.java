@@ -43,8 +43,8 @@ public class AnswerController {
     }
 
     @MessageMapping("/hello/{roomId}")
-    public void answer(@DestinationVariable String roomId, Message message, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception{
-        Answer ans = new Answer(simpMessageHeaderAccessor.getSessionId(), tagScreening(message.getContent()));
+    public void answer(@DestinationVariable String roomId, Answer message, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception{
+        Answer ans = new Answer(message.getAuthor(), tagScreening(message.getContent()));
         if (!history.containsKey(roomId)){
             history.put(roomId, new ArrayList<Answer>());
         }
