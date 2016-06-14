@@ -8,6 +8,12 @@ public class MessageEntity {
     private String roomname;
     private String content;
 
+    public MessageEntity(String username, String roomname, String content){
+        this.username = username;
+        this.roomname = roomname;
+        this.content = content;
+    }
+
     public String getUsername() {
         return username;
     }

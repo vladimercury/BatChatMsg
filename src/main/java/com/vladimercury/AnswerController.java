@@ -18,6 +18,7 @@ import java.util.Map;
 @Controller
 public class AnswerController {
     private static Map<String, List<Answer>> history = new HashMap<String, List<Answer>>();
+    private static List<MessageEntity> messageEntityList = new ArrayList<MessageEntity>();
     private SimpMessageSendingOperations messageSendingOperations;
 
     @Autowired
@@ -32,6 +33,15 @@ public class AnswerController {
         return str;
     }
 
+    private static void entityListToHistory(List<MessageEntity> entityList){
+        for (MessageEntity entity : entityList){
+            if (!history.containsKey(entity.getRoomname())){
+                history.put(entity.getRoomname(), new ArrayList<Answer>());
+            }
+            history.get(entity.getRoomname()).add(new Answer(entity.getUsername(), entity.getContent()));
+        }
+    }
+
     @MessageMapping("/hello/{roomId}")
     public void answer(@DestinationVariable String roomId, Message message, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception{
         Answer ans = new Answer(simpMessageHeaderAccessor.getSessionId(), tagScreening(message.getContent()));
@@ -39,6 +49,7 @@ public class AnswerController {
             history.put(roomId, new ArrayList<Answer>());
         }
         history.get(roomId).add(ans);
+        messageEntityList.add(new MessageEntity(ans.getAuthor(), ans.getContent(), roomId));
         messageSendingOperations.convertAndSend("/topic/greetings/" + roomId, ans);
     }
 
