@@ -1,6 +1,2 @@
-com/vladimercury/MessageBean.class
-com/vladimercury/MessageMapper.class
-com/vladimercury/MessageDAO.class
-com/vladimercury/MessageJDBCTemplate.class
 com/vladimercury/Application.class
 com/vladimercury/Message.class

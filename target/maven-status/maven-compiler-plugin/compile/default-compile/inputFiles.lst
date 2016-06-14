@@ -1,8 +1,5 @@
 /home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/Application.java
-/home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/MessageMapper.java
-/home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/MvcConfig.java
+/home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/AnswerController.java
+/home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/Answer.java
 /home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/Message.java
-/home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/MessageDAO.java
-/home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/MessageJDBCTemplate.java
-/home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/WebSecurityConfig.java
-/home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/MessageBean.java
+/home/vladimercury/IdeaProjects/BatchatMsg/src/main/java/com/vladimercury/WebSocketConfig.java

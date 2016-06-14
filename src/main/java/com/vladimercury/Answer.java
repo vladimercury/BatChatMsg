@@ -1,10 +1,14 @@
 package com.vladimercury;
 
 /**
- * Created by vladimercury on 6/12/16.
+ * Created by vladimercury on 6/13/16.
  */
-public class Msg {
+public class Answer {
     private String content;
+
+    public Answer(String content){
+        this.content = content;
+    }
 
     public String getContent() {
         return content;
