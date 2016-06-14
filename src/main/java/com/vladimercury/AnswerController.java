@@ -15,22 +15,32 @@ import java.util.List;
 public class AnswerController {
     private static List<Answer> history = new ArrayList<Answer>();
 
+    private static String tagScreening(String str){
+        str = str.replace("&", "&amp;");
+        str = str.replace("<", "&lt;");
+        str = str.replace(">", "&gt");
+        return str;
+    }
+
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
     public Answer answer(Message message, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception{
-        Answer ans = new Answer(simpMessageHeaderAccessor.getSessionId() + ": " +  message.getContent() + "!");
+        Answer ans = new Answer(simpMessageHeaderAccessor.getSessionId(), tagScreening(message.getContent()));
         history.add(ans);
         return ans;
     }
 
     @MessageMapping("/history")
     @SendTo("/topic/history")
-    public Answer answer() throws Exception{
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Answer ans : history){
-            stringBuilder.append(ans.getContent());
-            stringBuilder.append("\n");
+    public History getHistory() throws Exception{
+        String[] authors = new String[history.size()];
+        String[] messages = new String[history.size()];
+        int index = 0;
+        for (Answer answer : history) {
+            authors[index] = answer.getAuthor();
+            messages[index] = answer.getContent();
+            index++;
         }
-        return new Answer(stringBuilder.toString());
+        return new History(authors, messages);
     }
 }

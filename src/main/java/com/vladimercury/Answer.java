@@ -5,8 +5,10 @@ package com.vladimercury;
  */
 public class Answer {
     private String content;
+    private String author;
 
-    public Answer(String content){
+    public Answer(String author, String content){
+        this.author = author;
         this.content = content;
     }
 
@@ -16,5 +18,13 @@ public class Answer {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }
