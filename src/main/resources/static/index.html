@@ -6,10 +6,11 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="js/sockjs-0.3.4.js"></script>
     <script src="js/stomp.js"></script>
-    <script src="js/bootstrap.js"></script>
     <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/bootstrap.js"></script>
     <script type="text/javascript">
         var stompClient = null;
+        var roomname = '';
         var usernames = {};
         var colors = [
             "#e32636", "#78dbe2", "#9f2b68",
@@ -36,13 +37,14 @@
         }
 
         function connect() {
+            getRoomName();
             var socket = new SockJS('/hello');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function(frame) {
-                stompClient.subscribe('/topic/greetings', function(greeting){
+                stompClient.subscribe('/topic/greetings/' + roomname, function(greeting){
                     showGreeting(JSON.parse(greeting.body));
                 });
-                stompClient.subscribe('/topic/history', function(greeting){
+                stompClient.subscribe('/topic/history/' + roomname, function(greeting){
                     showHistory(JSON.parse(greeting.body));
                 });
             });
@@ -65,25 +67,34 @@
             return usernames[username];
         }
 
+        function getRoomName(){
+            addr = location.href.split('?');
+            if(addr[1] == null)
+                roomname = 'undefined';
+            else
+                roomname = addr[1];
+            document.getElementById('roomname').innerHTML = 'Room ' + roomname;
+        }
+
         function sendName() {
             var content = document.getElementById('content').value;
             if(content == '') return;
-            stompClient.send("/app/hello", {}, JSON.stringify({ 'content': content }));
+            stompClient.send('/app/hello/' + roomname, {}, JSON.stringify({ 'content': content }));
             document.getElementById('content').value = '';
         }
 
         function sendHistoryQuery(){
-            if(stompClient.ws.readyState === SockJS.CONNECTING && stompClient.ws.subscheck != 2)
+            if(stompClient.ws.readyState === SockJS.CONNECTING || stompClient.subscheck != 2)
                 setTimeout(sendHistoryQuery, 100);
             else
-                stompClient.send("/app/history", {}, JSON.stringify({ 'content': '' }));
+                stompClient.send('/app/history/' + roomname, {}, JSON.stringify({ 'content': '' }));
         }
 
         function showGreeting(message) {
             document.getElementById('response').innerHTML = document.getElementById('response').innerHTML +
                 '<b><code><font color="' + getColor(message.author) + '">' + message.author + '</font></code></b>: ' +
                 message.content + '<br>';
-            lastMessage = message;
+	        document.getElementById('response').scrollTop = document.getElementById('response').scrollHeight;
         }
 
         function showHistory(history){
